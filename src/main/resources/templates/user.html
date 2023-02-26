@@ -1,0 +1,134 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>User Page</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div>-->
+<!--    <table border="1">-->
+<!--        <p>User Information-Page</p>-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--            <td>ID</td>-->
+<!--            <td>Username</td>-->
+<!--            <td>Firstname</td>-->
+<!--            <td>Lastname</td>-->
+<!--            <td>Role</td>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr th:object="${user}">-->
+<!--            <td th:text="*{getId()}"/>-->
+<!--            <td th:text="*{getUsername()}"/>-->
+<!--            <td th:text="*{getName()}"/>-->
+<!--            <td th:text="*{getLastName()}"/>-->
+<!--            <td th:text="*{roles()}"/>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+
+<!--    </table>-->
+<!--</div>-->
+
+<!--<br>-->
+
+<!--<form th:action="@{/logout}" method="get">-->
+<!--    <input type="submit" value="exit"/>-->
+<!--</form>-->
+
+<!--</body>-->
+<!--</html>-->
+
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+</head>
+<title>User page</title>
+<body>
+<!--th:each="role : ${user.getRoles()}" th:utext="${#strings.substringAfter(role.name,'ROLE_')}-->
+<!--Верхняя панель-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="row navbar navbar-dark  text-white bg-dark pd-0 pt-1">
+                <div class="col no-gutters justify-content-start">
+                    <a class="navbar-brand  col-sm-3 col-md-2 mr-0" href="#">
+                        <span class="text-white font-weight-bolder align-bottom" th:utext="${user.username}"></span>
+                        <span class="text-white align-bottom" th:utext="' with roles: '"></span>
+                        <th:block th:each="role : ${user.roles}">
+                            <span th:utext="${#strings.substringAfter(role.name, 'ROLE_')}"></span>
+                        </th:block>
+                    </a>
+                </div>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <div>
+                            <button form="logout" class="fs-5 pe-4 btn btn-dark text-white-50" type="submit">Logout
+                            </button>
+                            <form id="logout" th:method="POST" th:action="@{/logout}"></form>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container h-100 d-inline-block" style="max-width: 100%">
+    <div class="row" style="height:100vh">
+        <!------------Левая панель User and Admin------------->
+        <div class="col-md ml-auto pt-3 pl-0 pr-0">
+            <nav class="nav flex-column nav-pills">
+                <a class="nav-link" href="/admin" sec:authorize="hasAuthority('ROLE_ADMIN')">Admin</a>
+                <a class="nav-link active" href="/user" sec:authorize="hasAuthority('ROLE_USER')">User</a>
+            </nav>
+        </div>
+        <!------------Подпись к таблице------------->
+        <div class="col-10 card-header">
+            <h1>User information-page</h1>
+            <div class="card">
+                <h5 class="card-header">About user</h5>
+                <div class="card-body">
+                    <!-------------Таблица-------------->
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Last Name</th>
+                            <th scope="col">Role</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:object="${user}">
+                            <td th:utext="${user.id}"></td>
+                            <td th:utext="${user.username}"></td>
+                            <td th:utext="${user.name}"></td>
+                            <td th:utext="${user.lastName}"></td>
+                            <td>
+                                <th:block th:each="role : ${user.roles}">
+                                        <span
+                                                th:utext="${#strings.substringAfter(role.name,'ROLE_')}"> </span>
+                                </th:block>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>
